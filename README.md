@@ -36,6 +36,8 @@ Baza `data/rasta.sqlite` ichida; Git’ga kiritilmaydi. Web sessiyalari HttpOnly
 
 ### Native mobil ilova
 
+Telefonga o‘rnatiladigan Android release APK uchun [build va imzolash qo‘llanmasi](deploy/ANDROID.md). GitHub Actions’dagi **Build Android APK** workflow production API manzilini APK ichiga yozadi.
+
 ```sh
 # apps/mobile/.env.example dan apps/mobile/.env yarating.
 # EXPO_PUBLIC_API_URL ni kompyuterning telefon uchun ochiq LAN manziliga qo‘ying.
