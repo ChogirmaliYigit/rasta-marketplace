@@ -1,5 +1,14 @@
 # Rasta platforma MVP — tekshiruv natijalari
 
+## Android APK — 2026-10-19
+
+- GitHub Actions run `39249266017`: release APK build va artifact tekshiruvi muvaffaqiyatli.
+- Paket: `uz.rasta.retailer`, versiya `0.2.0`, versionCode `1`, minSdk `24`, ARM64 va ARMv7.
+- Doimiy Rasta kaliti bilan APK Signature Scheme v2 imzosi tekshirildi; debug APK emas.
+- APK ichidagi Hermes bundle `https://api.rasta.ardentsoft.uz` ni o‘z ichiga olishi tekshirildi; server health javobi `ok: true`.
+- Yuklangan artifact SHA-256 tekshiruvidan o‘tdi. Production bazaga yangi sinov akkaunti yoki mahsulot yozilmadi.
+- Fizik telefonda o‘rnatish/ochish va real buyurtma oqimi foydalanuvchi sinovini kutmoqda.
+
 ## Production deploy — 2026-10-19
 
 - Linux serverda 18/18 test o‘tdi; vaqtinchalik test bazalari o‘chirildi.

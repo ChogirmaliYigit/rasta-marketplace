@@ -36,7 +36,7 @@ Bu tekshiruv sessiyani ochib, yopadi; mahsulot, do‘kon yoki buyurtma yaratmayd
 
 ## Mobil ilova
 
-Native build uchun `EXPO_PUBLIC_API_URL=https://api.rasta.ardentsoft.uz`. Android/iOS JS eksporti serverda tekshirilgan; imzolangan APK/IPA, qurilmadagi sinov va do‘konlarga nashr alohida ish. Production server mobil web preview bermaydi.
+Native build uchun `EXPO_PUBLIC_API_URL=https://api.rasta.ardentsoft.uz`. Android/iOS JS eksporti serverda tekshirilgan. [Imzolangan Android APK](ANDROID.md) GitHub build serverida yig‘ilgan va yuklab olish uchun release’da mavjud. Fizik qurilma sinovi, iOS IPA va do‘konlarga nashr alohida ish. Production server mobil web preview bermaydi.
 
 ## Zaxira
 

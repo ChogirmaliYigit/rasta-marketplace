@@ -2,6 +2,12 @@
 
 Do‘konchi ilovasi: `uz.rasta.retailer`. Production API: `https://api.rasta.ardentsoft.uz`.
 
+## Tayyor APK — 0.2.0 (1)
+
+[APK yuklab olish](https://github.com/ChogirmaliYigit/rasta-marketplace/releases/download/android-v0.2.0-1/rasta-android.apk) · [Release va SHA-256](https://github.com/ChogirmaliYigit/rasta-marketplace/releases/tag/android-v0.2.0-1)
+
+Android 7.0+ (API 24), ARM64 va ARMv7. Release build, production HTTPS API, Expo Go talab qilinmaydi. [Build #1](https://github.com/ChogirmaliYigit/rasta-marketplace/actions/runs/39249266017) imzo va bundle ichidagi API manzilini tekshirgan. Fizik telefon sinovi hali bajarilmagan.
+
 ## Qayta build qilish
 
 1. `apps/mobile/app.json` ichidagi `android.versionCode` ni oshiring. Foydalanuvchiga ko‘rinadigan release uchun `version` ni ham yangilang.
