@@ -17,3 +17,8 @@ apps/mobile/dist-native/
 
 node_modules.icloud-current/
 backups/
+*.jks
+*.keystore
+*.apk
+*.aab
+apk-output/

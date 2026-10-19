@@ -1,0 +1,67 @@
+name: Build Android APK
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: android-apk
+  cancel-in-progress: false
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      CI: '1'
+      EXPO_PUBLIC_API_URL: https://api.rasta.ardentsoft.uz
+      NODE_OPTIONS: --max-old-space-size=2048
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - run: npm install --global pnpm@11.25.0
+      - run: pnpm install --frozen-lockfile
+      - name: Generate Android project
+        run: pnpm --filter @rasta/mobile exec expo prebuild --platform android --no-install
+      - name: Build signed release APK
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: rasta
+        run: |
+          set -euo pipefail
+          umask 077
+          export ANDROID_KEYSTORE_PATH="$RUNNER_TEMP/rasta-release.jks"
+          trap 'rm -f "$ANDROID_KEYSTORE_PATH"' EXIT
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$ANDROID_KEYSTORE_PATH"
+          node scripts/configure-android-signing.mjs
+          cd apps/mobile/android
+          ./gradlew :app:assembleRelease --no-daemon --max-workers=2 \
+            -PreactNativeArchitectures=arm64-v8a,armeabi-v7a \
+            -Dorg.gradle.jvmargs='-Xmx3072m -XX:MaxMetaspaceSize=768m' \
+            -Pkotlin.compiler.execution.strategy=in-process
+      - name: Verify APK and API endpoint
+        run: |
+          set -euo pipefail
+          mkdir -p apk-output
+          cp apps/mobile/android/app/build/outputs/apk/release/app-release.apk apk-output/rasta-android.apk
+          apksigner=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -1)
+          "$apksigner" verify --verbose --print-certs apk-output/rasta-android.apk
+          aapt=$(find "$ANDROID_HOME/build-tools" -name aapt | sort -V | tail -1)
+          "$aapt" dump badging apk-output/rasta-android.apk > apk-output/manifest.txt
+          unzip -p apk-output/rasta-android.apk assets/index.android.bundle > "$RUNNER_TEMP/rasta.bundle"
+          node -e 'const b=require("fs").readFileSync(process.env.RUNNER_TEMP+"/rasta.bundle"); if(!b.includes(Buffer.from(process.env.EXPO_PUBLIC_API_URL))) throw Error("Production API URL missing from APK");'
+          rm "$RUNNER_TEMP/rasta.bundle"
+          cd apk-output
+          sha256sum rasta-android.apk > SHA256SUMS
+          printf 'Commit: %s\nAPI: %s\n' "$GITHUB_SHA" "$EXPO_PUBLIC_API_URL" > BUILD.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rasta-android-apk
+          path: apk-output/
+          if-no-files-found: error
+          retention-days: 14

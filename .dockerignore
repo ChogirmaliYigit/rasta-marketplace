@@ -15,3 +15,8 @@ src
 docs
 tests
 .DS_Store
+**/*.jks
+**/*.keystore
+**/*.apk
+**/*.aab
+apk-output
