@@ -1,0 +1,24 @@
+{
+  "name": "rasta-platform",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "node apps/api/server.mjs",
+    "start": "node apps/api/server.mjs",
+    "demo": "DATABASE_PATH=data/demo.sqlite SEED_DEMO=true node apps/api/server.mjs",
+    "build": "pnpm build:web && pnpm build:mobile",
+    "build:web": "pnpm --filter @rasta/wholesaler build && pnpm --filter @rasta/admin build",
+    "build:mobile": "pnpm --filter @rasta/mobile build",
+    "mobile": "pnpm --filter @rasta/mobile start",
+    "test": "node --test tests/*.test.mjs",
+    "sync:warehouse": "node scripts/warehouse-sync.mjs",
+    "preview": "node apps/api/server.mjs",
+    "deploy:check": "node scripts/deploy-check.mjs",
+    "build:mobile:production": "node scripts/build-mobile-production.mjs"
+  }
+}

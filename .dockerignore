@@ -1,0 +1,17 @@
+.git
+**/node_modules
+node_modules.icloud-*
+.pnpm-store
+**/dist
+**/dist-native
+**/.expo
+**/.env
+**/.env.*
+**/*.sqlite*
+data
+backups
+legacy
+src
+docs
+tests
+.DS_Store

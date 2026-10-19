@@ -1,0 +1,67 @@
+name: rasta
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      target: api
+    restart: unless-stopped
+    init: true
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 4173
+      DATABASE_PATH: /data/rasta.sqlite
+      API_ONLY: "true"
+      COOKIE_SECURE: "true"
+      TRUST_PROXY: "true"
+      SEED_DEMO: "false"
+      ALLOWED_ORIGINS: https://${SUPPLIER_DOMAIN:?Set SUPPLIER_DOMAIN},https://${ADMIN_DOMAIN:?Set ADMIN_DOMAIN},https://${API_DOMAIN:?Set API_DOMAIN}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:?Set ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Set ADMIN_PASSWORD}
+      ADMIN_NAME: ${ADMIN_NAME:-Administrator}
+    volumes:
+      - database:/data
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4173/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    stop_grace_period: 30s
+    networks: [backend]
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+  gateway:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      target: gateway
+      args:
+        SUPPLIER_DOMAIN: ${SUPPLIER_DOMAIN:?Set SUPPLIER_DOMAIN}
+        ADMIN_DOMAIN: ${ADMIN_DOMAIN:?Set ADMIN_DOMAIN}
+    restart: unless-stopped
+    environment:
+      SUPPLIER_DOMAIN: ${SUPPLIER_DOMAIN}
+      ADMIN_DOMAIN: ${ADMIN_DOMAIN}
+      API_DOMAIN: ${API_DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL:?Set ACME_EMAIL}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      api:
+        condition: service_healthy
+    networks: [backend, public]
+volumes:
+  database:
+  caddy_data:
+  caddy_config:
+networks:
+  backend:
+    internal: true
+  public:

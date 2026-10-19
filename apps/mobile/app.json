@@ -1,0 +1,1 @@
+{"expo":{"name":"Rasta Do‘kon","slug":"rasta-retailer","scheme":"rasta","version":"0.2.0","orientation":"portrait","userInterfaceStyle":"light","ios":{"supportsTablet":true,"bundleIdentifier":"uz.rasta.retailer"},"android":{"package":"uz.rasta.retailer"},"web":{"bundler":"metro","output":"single"},"experiments":{"baseUrl":"/mobile"}}}
